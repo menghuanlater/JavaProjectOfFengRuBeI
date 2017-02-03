@@ -28,26 +28,23 @@ class NodeUserInfo{
         return userCode;
     }
 
-    public void setUserCodeAndName(int userCode) {
+    protected void setUserCodeAndName(int userCode) {
         this.userCode = userCode;
         SearchBetweenNameID temp = new SearchBetweenNameID();
         temp.set(userCode);
         userName = temp.getUserName();
-    }
-
-    public boolean isExist() {
-        return exist;
-    }
-
-    public void setExist() {
         this.exist = true;
+    }
+
+    protected boolean isExist() {
+        return exist;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void selfAddCounter(){
+    protected void selfUpCounter(){
         count++;
     }
 
@@ -91,10 +88,6 @@ public class DictTreeNode {
         return linkNodeArray[position];
     }
     //final user信息的build
-    public void setNodeUser(int userCode){
-        this.nodeUser.setUserCodeAndName(userCode);
-        this.nodeUser.setExist();
-    }
     public NodeUserInfo getNodeUser(){
         return nodeUser;
     }
