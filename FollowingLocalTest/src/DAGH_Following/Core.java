@@ -55,7 +55,9 @@ public class Core {
             sql = String.format("select * from followers where user=%d", aTargetFollowing.getUserCode());
             db = new DBConnect(sql);
             ret = db.pst.executeQuery();
+            quoteFunction.buildDictTree(ret,treeHeadNode,aTargetFollowing);
         }
-    }
+        /*进行深度优先遍历，取出字典树有效的结点*/
 
+    }
 }
