@@ -61,7 +61,7 @@ class NodeUserInfo{
 }
 
 public class DictTreeNode {
-    private static final int ARRAY_LENGTH = 10;
+    static final int ARRAY_LENGTH = 10;
     //flagNodeArray数组用来表示10个link结点是否实际存在
     private boolean flagNodeArray[] = new boolean[ARRAY_LENGTH];
     //linkNodeArray数组表示是个link结点，不存在则表示为null

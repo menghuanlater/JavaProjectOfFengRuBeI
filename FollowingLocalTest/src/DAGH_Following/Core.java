@@ -14,6 +14,8 @@ import java.util.Scanner;
  */
 public class Core {
     //系统输入对象
+    static String targetName = null;
+    static int targetID = SearchBetweenNameID.CODE_DEFAULT;
     private static Scanner input = new Scanner(System.in);
     private static DBConnect db = null;
     private static String sql = null;
@@ -24,8 +26,7 @@ public class Core {
     public static void main(String[] args) throws SQLException {
         System.out.print("please enter user name:");
         //输入的name
-        String targetName = input.next();
-        int targetID;
+        targetName = input.next();
         SearchBetweenNameID target = new SearchBetweenNameID();
         target.set(targetName);
         targetID = target.getUserCode();
@@ -58,6 +59,18 @@ public class Core {
             quoteFunction.buildDictTree(ret,treeHeadNode,aTargetFollowing);
         }
         /*进行深度优先遍历，取出字典树有效的结点*/
-
+        List<NodeUserInfo> commonUsersSet = new ArrayList<>();
+        quoteFunction.deepFirstSearch(treeHeadNode,commonUsersSet);
+        /*对于DFS找出的字典树有效结点集进行快速排序*/
+        quoteFunction.quickSort(commonUsersSet,0,commonUsersSet.size()-1);
+        /*输出最终结果*/
+        System.out.println("-_- -_- -_- Have Get The Final Outcome -_- -_- -_-");
+        for(int i = 0,loopLength = commonUsersSet.size();i<loopLength;i++){
+            NodeUserInfo forOutPut = commonUsersSet.get(i);
+            System.out.print("UserName:"+forOutPut.getUserName()+" ");
+            System.out.print("UserID:"+forOutPut.getUserCode()+" ");
+            System.out.print("SameFollowingNum:"+forOutPut.getCount()+'\n');
+        }
+        System.out.println("一共有"+commonUsersSet.size()+"个相关开发者!");
     }
 }
