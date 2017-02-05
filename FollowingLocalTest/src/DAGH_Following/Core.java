@@ -88,7 +88,7 @@ public class Core {
         Label title3 = new Label(2,0,TITLES[2]); firstSheet.addCell(title3);
         for(int i = 0,loopLength = commonUsersSet.size();i<loopLength;i++){
             NodeUserInfo forOutPut = commonUsersSet.get(i);
-            firstSheet.addCell(new Label(0,i+1,forOutPut.getUserName()));
+            firstSheet.addCell(new Label(0,i+1,(forOutPut.getUserName()==null)?"null":forOutPut.getUserName()));
             firstSheet.addCell(new Label(1,i+1,Integer.toString(forOutPut.getUserCode())));
             firstSheet.addCell(new Label(2,i+1,Integer.toString(forOutPut.getCount())));
         }
