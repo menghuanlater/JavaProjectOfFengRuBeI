@@ -4,10 +4,7 @@ import MysqlAssist.DBConnect;
 import MysqlAssist.SearchBetweenNameID;
 import jxl.CellView;
 import jxl.Workbook;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
+import jxl.write.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,14 +80,20 @@ public class Core {
         firstSheet.setColumnView(0,cellView);
         firstSheet.setColumnView(1,cellView);
         firstSheet.setColumnView(2,cellView);
-        Label title1 = new Label(0,0,TITLES[0]); firstSheet.addCell(title1);
-        Label title2 = new Label(1,0,TITLES[1]); firstSheet.addCell(title2);
-        Label title3 = new Label(2,0,TITLES[2]); firstSheet.addCell(title3);
+        //设置单元格居中显示
+        WritableCellFormat cellFormat = new WritableCellFormat();
+        cellFormat.setAlignment(jxl.format.Alignment.CENTRE);
+        //设置标题栏
+        Label title1 = new Label(0,0,TITLES[0],cellFormat); firstSheet.addCell(title1);
+        Label title2 = new Label(1,0,TITLES[1],cellFormat); firstSheet.addCell(title2);
+        Label title3 = new Label(2,0,TITLES[2],cellFormat); firstSheet.addCell(title3);
+        //循环写入excel
         for(int i = 0,loopLength = commonUsersSet.size();i<loopLength;i++){
             NodeUserInfo forOutPut = commonUsersSet.get(i);
-            firstSheet.addCell(new Label(0,i+1,(forOutPut.getUserName()==null)?"null":forOutPut.getUserName()));
-            firstSheet.addCell(new Label(1,i+1,Integer.toString(forOutPut.getUserCode())));
-            firstSheet.addCell(new Label(2,i+1,Integer.toString(forOutPut.getCount())));
+            firstSheet.addCell(new Label(0,i+1,(forOutPut.getUserName() == null)?"null":
+                                        forOutPut.getUserName(),cellFormat));
+            firstSheet.addCell(new Label(1,i+1,Integer.toString(forOutPut.getUserCode()),cellFormat));
+            firstSheet.addCell(new Label(2,i+1,Integer.toString(forOutPut.getCount()),cellFormat));
         }
         writeBook.write();
         writeBook.close();
