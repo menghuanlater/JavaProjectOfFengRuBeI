@@ -19,20 +19,23 @@ import java.util.Scanner;
  */
 public class Core {
     //系统输入对象
-    static String targetName = null;
-    static int targetID = SearchBetweenNameID.CODE_DEFAULT;
-    private static Scanner input = new Scanner(System.in);
-    private static DBConnect db = null;
-    private static String sql = null;
-    private static ResultSet ret = null;
-    private static final String[] TITLES = {"UserName","UserID","SameFollowingCount"};
-    private static Functions quoteFunction = new Functions();
-    private static String fileName = null;
+    static String targetName = null; //输入的user
+    static int targetID = SearchBetweenNameID.CODE_DEFAULT;//user默认的code
+    private static Scanner input = new Scanner(System.in); //input对象
+    private static DBConnect db = null; //数据库连接实例
+    private static String sql = null; //sql语句
+    private static ResultSet ret = null; //结果集
+    private static final String[] TITLES = {"UserName","UserID","SameFollowingCount"};//excel标题
+    private static Functions quoteFunction = new Functions();//函数电泳实例对象
+    private static String fileName = null;//文件名
+    private static long startTime = 0,endTime = 0; //计算运行时间
 
     public static void main(String[] args) throws SQLException, IOException, WriteException {
         System.out.print("please enter user name:");
         //输入的name
         targetName = input.next();
+        /*start time*/
+        startTime = System.currentTimeMillis();
         SearchBetweenNameID target = new SearchBetweenNameID();
         target.set(targetName);
         targetID = target.getUserCode();
@@ -64,11 +67,19 @@ public class Core {
             ret = db.pst.executeQuery();
             quoteFunction.buildDictTree(ret,treeHeadNode,aTargetFollowing);
         }
+        endTime = System.currentTimeMillis();
+        System.out.println("字典树构建耗时:"+(endTime - startTime)+"ms");
+        startTime = System.currentTimeMillis();
         /*进行深度优先遍历，取出字典树有效的结点*/
         List<NodeUserInfo> commonUsersSet = new ArrayList<>();
         quoteFunction.deepFirstSearch(treeHeadNode,commonUsersSet);
-        /*对于DFS找出的字典树有效结点集进行快速排序*/
-        quoteFunction.quickSort(commonUsersSet,0,commonUsersSet.size()-1);
+        /*对于DFS找出的字典树有效结点集进行快速排序(先进行优化算法)*/
+        /*优化点在于先找出所有的1结点，省去大量的排序时间*/
+        int startQuickSortPosition = quoteFunction.optimizeSort(commonUsersSet); //获得快排的开始点
+        quoteFunction.quickSort(commonUsersSet,startQuickSortPosition,commonUsersSet.size()-1);
+        endTime = System.currentTimeMillis();
+        System.out.println("DFS和快排耗时:"+(endTime - startTime)+"ms");
+
         /*输出最终结果到excel工作簿中*/
         System.out.println("-_- -_- -_- Have Get The Final Outcome -_- -_- -_-");
         fileName = String.format("D:/githubOutPut/%s.xls",targetName);
@@ -88,12 +99,12 @@ public class Core {
         Label title2 = new Label(1,0,TITLES[1],cellFormat); firstSheet.addCell(title2);
         Label title3 = new Label(2,0,TITLES[2],cellFormat); firstSheet.addCell(title3);
         //循环写入excel
-        for(int i = 0,loopLength = commonUsersSet.size();i<loopLength;i++){
+        for(int i = commonUsersSet.size() - 1,len = i+1;i >= 0;i--){
             NodeUserInfo forOutPut = commonUsersSet.get(i);
-            firstSheet.addCell(new Label(0,i+1,(forOutPut.getUserName() == null)?"null":
+            firstSheet.addCell(new Label(0,len - i,(forOutPut.getUserName() == null)?"null":
                                         forOutPut.getUserName(),cellFormat));
-            firstSheet.addCell(new Label(1,i+1,Integer.toString(forOutPut.getUserCode()),cellFormat));
-            firstSheet.addCell(new Label(2,i+1,Integer.toString(forOutPut.getCount()),cellFormat));
+            firstSheet.addCell(new Label(1,len - i,Integer.toString(forOutPut.getUserCode()),cellFormat));
+            firstSheet.addCell(new Label(2,len - i,Integer.toString(forOutPut.getCount()),cellFormat));
         }
         writeBook.write();
         writeBook.close();
