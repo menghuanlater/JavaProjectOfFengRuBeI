@@ -61,21 +61,39 @@ public class Functions {
             if(head.getFlag(i)) deepFirstSearch(head.getNextDictTreeNode(i), commonUsersSet);
         }
     }
+    public int optimizeSort(List<NodeUserInfo> commonUsersSet){
+        int firstPointPtr = 0, secondPointPtr = commonUsersSet.size() - 1;
+        int position = 0;
+        while(firstPointPtr < secondPointPtr){
+            while(firstPointPtr < secondPointPtr && commonUsersSet.get(firstPointPtr).getCount() == 1)
+                firstPointPtr++;
+            while(firstPointPtr < secondPointPtr && commonUsersSet.get(secondPointPtr).getCount() != 1)
+                secondPointPtr--;
+            NodeUserInfo temp = commonUsersSet.get(firstPointPtr);
+            commonUsersSet.set(firstPointPtr,commonUsersSet.get(secondPointPtr));
+            commonUsersSet.set(secondPointPtr,temp);
+        }
+        if(commonUsersSet.get(firstPointPtr).getCount() == 1)
+            position = firstPointPtr + 1;
+        else
+            position = firstPointPtr;
+        return position;
+    }
     public void quickSort(List<NodeUserInfo> commonUsersSet,int low,int high){
         if(low < high){
-            int pivotkey = Pivot(commonUsersSet,low,high);
-            quickSort(commonUsersSet,low,pivotkey-1);
-            quickSort(commonUsersSet,pivotkey+1,high);
+            int pivotKey = Pivot(commonUsersSet,low,high);
+            quickSort(commonUsersSet,low,pivotKey-1);
+            quickSort(commonUsersSet,pivotKey+1,high);
         }
     }
     public int Pivot(List<NodeUserInfo> commonUsersSet,int low,int high){
         NodeUserInfo temp = commonUsersSet.get(low);
         int tempCount = temp.getCount();
         while(low < high){
-            while(low < high && commonUsersSet.get(high).getCount() <= tempCount)
+            while(low < high && commonUsersSet.get(high).getCount() >= tempCount)
                 high--;
             commonUsersSet.set(low,commonUsersSet.get(high));
-            while(low < high && commonUsersSet.get(low).getCount() >= tempCount)
+            while(low < high && commonUsersSet.get(low).getCount() <= tempCount)
                 low++;
             commonUsersSet.set(high,commonUsersSet.get(low));
         }
