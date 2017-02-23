@@ -14,18 +14,26 @@ public class DBConnect
     private static final String url = "jdbc:mysql://localhost:3306/github?characterEncoding=utf-8&useSSL=true";
     private static final String name = "com.mysql.jdbc.Driver";
     private static final String user = "root";
-    private static final String password = "root";//password can not give to public,sorry!
+    private static final String password = "root";
 
-    private Connection conn = null;
+    public Connection conn = null;
     public PreparedStatement pst = null;
 
-    public DBConnect(String sql)
+    public DBConnect()
     {
         try {
             Class.forName(name);//指定连接类型
             conn = DriverManager.getConnection(url,user,password);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setPst(String sql)
+    {
+        try {
             pst = conn.prepareStatement(sql);
-            pst.setFetchSize(Integer.MIN_VALUE);
+            //pst.setFetchSize(Integer.MIN_VALUE);
         }catch(Exception e){
             e.printStackTrace();
         }
