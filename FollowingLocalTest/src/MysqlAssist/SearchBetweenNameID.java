@@ -1,5 +1,7 @@
 package MysqlAssist;
 
+import DAGH_Following.Core;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,7 +15,6 @@ public class SearchBetweenNameID {
     public static final int CODE_DEFAULT = 0;
     private static final String NAME_DEFAULT = null;
     private static String sql = null;
-    private static DBConnect db = null;
     private static ResultSet ret = null;
 
     public SearchBetweenNameID() {
@@ -40,28 +41,30 @@ public class SearchBetweenNameID {
     }
 
     private void searchUserCode() {
-        sql = String.format("select * from users_name where user_name='%s'",this.userName);
-        db = new DBConnect(sql);
+        sql = String.format("select id from users_name where user_name='%s'",this.userName);
+        Core.db.setPst(sql);
         try {
-            ret = db.pst.executeQuery();
-            if(ret.next())
+            ret = Core.db.pst.executeQuery();
+            if(ret.next()) {
                 userCode = ret.getInt(1);
+                ret.close();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        db.close();
     }
 
     private void searchUserName(){
-        sql = String.format("select * from users_name_copy where id = %d",userCode);
-        db = new DBConnect(sql);
+        sql = String.format("select user_name from users_name_copy where id = %d",userCode);
+        Core.db.setPst(sql);
         try {
-            ret = db.pst.executeQuery();
-            if(ret.next())
-                userName = ret.getString(2);
+            ret = Core.db.pst.executeQuery();
+            if(ret.next()) {
+                userName = ret.getString(1);
+                ret.close();
+            }
         } catch (SQLException e){
             e.printStackTrace();
         }
-        db.close();
     }
 }
