@@ -23,10 +23,10 @@ public class Core {
     static int targetID = SearchBetweenNameID.CODE_DEFAULT;//user默认的code
     static List<NodeUserInfo> commonUsersSet = new ArrayList<>();
     private static Scanner input = new Scanner(System.in); //input对象
-    private static DBConnect db = null; //数据库连接实例
+    public  static DBConnect db = new DBConnect(); //数据库连接实例(全体变量)
     private static String sql = null; //sql语句
     private static ResultSet ret = null; //结果集
-    private static final String[] TITLES = {"UserName","UserID","SameFollowingCount"};//excel标题
+    private static final String[] TITLES = {"UserName","SameFollowingCount"};//excel标题
     private static Functions quoteFunction = new Functions();//函数电泳实例对象
     private static String fileName = null;//文件名
     private static long startTime = 0,endTime = 0; //计算运行时间
@@ -47,7 +47,7 @@ public class Core {
         }
         //不存在此时程序已经停止运行
         sql = String.format("select following from following where user=%d",targetID);
-        db = new DBConnect(sql);
+        db.setPst(sql);
         ret = db.pst.executeQuery();
         List<FollowersNode> targetFollowing = new ArrayList<>();
         // 遍历ret,将结果写入动态数组
@@ -56,6 +56,7 @@ public class Core {
             tempFollowing.set(ret.getInt(1));
             targetFollowing.add(tempFollowing);
         }
+        ret.close();
         /*
            以上实现的是找出target_name所有的following
            the next is build the whole DictTree
@@ -65,10 +66,12 @@ public class Core {
         for (int i = 0, targetFollowingSize = targetFollowing.size(); i < targetFollowingSize; i++) {
             FollowersNode aTargetFollowing = targetFollowing.get(i);
             sql = String.format("select followers from followers where user=%d", aTargetFollowing.getUserCode());
-            db = new DBConnect(sql);
+            db.setPst(sql);
             ret = db.pst.executeQuery();
             quoteFunction.buildDictTree(ret,treeHeadNode,aTargetFollowing);
+            ret.close();
         }
+        db.close();
         endTime = System.currentTimeMillis();
         System.out.println("字典树构建耗时:"+(endTime - startTime)+"ms");
         startTime = System.currentTimeMillis();
@@ -89,7 +92,7 @@ public class Core {
         //设置单元格宽度为自动调整
         CellView cellView = new CellView();
         cellView.setAutosize(true);
-        for(int k=0;k<commonUsersSet.get(commonUsersSet.size() - 1).getCount();k++){
+        for(int k=0;k<commonUsersSet.get(commonUsersSet.size() - 1).getCount()+2;k++){
             defaultSheet.setColumnView(k,cellView);
         }
         //设置单元格居中显示
@@ -98,7 +101,6 @@ public class Core {
         //设置标题栏
         Label title1 = new Label(0,0,TITLES[0],cellFormat); defaultSheet.addCell(title1);
         Label title2 = new Label(1,0,TITLES[1],cellFormat); defaultSheet.addCell(title2);
-        Label title3 = new Label(2,0,TITLES[2],cellFormat); defaultSheet.addCell(title3);
         //循环写入excel
         int count = 0;
         for(int i = commonUsersSet.size() - 1,len = i+1;i >= 0;i--){
@@ -107,13 +109,13 @@ public class Core {
             NodeUserInfo forOutPut = commonUsersSet.get(i);
             defaultSheet.addCell(new Label(0,len - i,(forOutPut.getUserName() == null)?"null":
                                         forOutPut.getUserName(),cellFormat));
-            defaultSheet.addCell(new Label(1,len - i,Integer.toString(forOutPut.getUserCode()),cellFormat));
-            defaultSheet.addCell(new Label(2,len - i,Integer.toString(forOutPut.getCount()),cellFormat));
+            defaultSheet.addCell(new Label(1,len - i,Integer.toString(forOutPut.getCount()),cellFormat));
             for(int j=1;j<=forOutPut.getCount();j++){
-                defaultSheet.addCell(new Label(j+2,len - i,forOutPut.getSameFollowing().get(j-1).getUserName(),cellFormat));
+                defaultSheet.addCell(new Label(j+1,len - i,forOutPut.getSameFollowing().get(j-1).getUserName(),cellFormat));
             }
         }
         writeBook.write();
         writeBook.close();
+        System.out.println("-_- -_- -_- 成功将结果写入excel -_- -_- -_-");
     }
 }
