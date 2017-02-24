@@ -1,0 +1,81 @@
+.welcomeBody
+{
+    height: auto;
+    width: auto;
+    background-size: cover;
+    background-image: url("imgs/5.jpg");
+    background-position: center;
+}
+.welcomeLeftDiv
+{
+    font-family: "Times New Roman","楷体";
+    color: #FFFFFF;
+    text-align: left;
+    width:30%;
+}
+.welcomeMiddleDiv
+{
+    font-family: "Times New Roman","楷体";
+    width: 40%;
+}
+.welcomeRightDiv
+{
+    font-family: "Times New Roman","楷体";
+    color: #FFFFFF;
+    text-align: left;
+    width: 30%;
+}
+.outPrintBody
+{
+    height:auto;
+    width:auto;
+    background-size: cover;
+    background-image: url("imgs/6.jpg");
+    background-position: center;
+}
+.outPrintHeadContent1
+{
+    font-family: "Times New Roman", "楷体";
+    font-size: 40px;
+    color: aqua;
+    text-align: center;
+    margin-top: 30px;
+}
+.outPrintHeadContent2
+{
+    font-family: "Times New Roman", "楷体";
+    font-size: 34px;
+    text-align: center;
+    color: bisque;
+}
+.userNameInput
+{
+    border-radius: 5px;
+    border: 1px solid #00FA9A;
+    width:200px;
+    height:36px;
+}
+.searchButton1
+{
+    font-family: "Times New Roman", "楷体";
+    font-size: 30px;
+    color: firebrick ;
+    border-radius: 5px;
+    border-color: #00FA9A;
+    width:80px;
+    height: 50px;
+}
+.downLoad
+{
+    font-family: "Times New Roman", "楷体";
+    font-size: 36px;
+    color: indigo ;
+    border-radius: 4px;
+    border-color: chocolate;
+    height: 40px;
+    text-align: center;
+}
+.sameFollowForkTable
+{
+    word-break: break-all;
+}
