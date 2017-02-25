@@ -10,7 +10,7 @@
     final String url = "jdbc:mysql://localhost:3306/github?characterEncoding=utf-8&useSSL=true";
     final String name = "com.mysql.jdbc.Driver";
     final String user = "root";
-    final String password = "zhishui314625ASD";
+    final String password = "root";
     Connection conn;
     PreparedStatement pst;
     String sql = String.format("select * from users_name where user_name='%s'",request.getParameter("username"));
