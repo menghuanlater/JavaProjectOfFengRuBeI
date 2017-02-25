@@ -12,7 +12,7 @@ public class DBConnect
     private static final String url = "jdbc:mysql://localhost:3306/github?characterEncoding=utf-8&useSSL=true";
     private static final String name = "com.mysql.jdbc.Driver";
     private static final String user = "root";
-    private static final String password = "zhishui314625ASD";
+    private static final String password = "root";
 
     private Connection conn = null;
     public PreparedStatement pst = null;
